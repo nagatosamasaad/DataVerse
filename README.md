@@ -40,7 +40,7 @@ optimization recommendations for smart city energy management.
 ---
 
 ## 👥 Team Members
-1.nagat osama 
-2.Ebrahim Ateff
-3.Abdullah Mohamed
-4.Merna Sameh
+1. nagat osama 
+2. Ebrahim Ateff
+3. Abdullah Mohamed
+4. Merna Sameh
