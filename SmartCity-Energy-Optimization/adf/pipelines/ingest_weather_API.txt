@@ -1,0 +1,79 @@
+{
+    "name": "Ingest_Weather_API",
+    "properties": {
+        "activities": [
+            {
+                "name": "Copy_WeatherAPI_to_RAW",
+                "type": "Copy",
+                "dependsOn": [],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "source": {
+                        "type": "JsonSource",
+                        "additionalColumns": [
+                            {
+                                "name": "load_date",
+                                "value": {
+                                    "value": "@utcNow()",
+                                    "type": "Expression"
+                                }
+                            },
+                            {
+                                "name": "api_status",
+                                "value": "success"
+                            }
+                        ],
+                        "storeSettings": {
+                            "type": "HttpReadSettings",
+                            "requestMethod": "GET"
+                        },
+                        "formatSettings": {
+                            "type": "JsonReadSettings"
+                        }
+                    },
+                    "sink": {
+                        "type": "JsonSink",
+                        "storeSettings": {
+                            "type": "AzureBlobFSWriteSettings"
+                        },
+                        "formatSettings": {
+                            "type": "JsonWriteSettings"
+                        }
+                    },
+                    "enableStaging": false
+                },
+                "inputs": [
+                    {
+                        "referenceName": "ds_weather_api",
+                        "type": "DatasetReference"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "referenceName": "ds_raw_weather",
+                        "type": "DatasetReference",
+                        "parameters": {
+                            "raw_weather": {
+                                "value": "@concat('weather_', formatDateTime(utcnow(), 'yyyyMMdd_HHmmss'), '.json')",
+                                "type": "Expression"
+                            }
+                        }
+                    }
+                ]
+            }
+        ],
+        "folder": {
+            "name": "smart city"
+        },
+        "annotations": [],
+        "lastPublishTime": "2025-11-27T19:38:55Z"
+    },
+    "type": "Microsoft.DataFactory/factories/pipelines"
+}

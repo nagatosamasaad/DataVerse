@@ -1,0 +1,129 @@
+# Optimization Engine Logic  
+Smart City Energy Optimization – Gold Layer
+
+This document explains the logic used to generate optimization recommendations
+based on forecasted energy consumption, weather impact, and traffic congestion.
+
+
+---
+
+## 1. Objective
+The Optimization Engine is responsible for:
+
+- Identifying peak load hours  
+- Detecting high-risk regions  
+- Suggesting actions to reduce energy stress  
+- Improving city-wide energy stability  
+- Prioritizing critical areas during high-demand periods  
+
+The engine operates entirely on **Gold layer tables** generated from ML forecasts.
+
+---
+
+## 2. Inputs
+The optimization engine reads from the following Gold tables:
+
+### ✔ `gold.energy_forecast`
+- timestamp  
+- region_id  
+- predicted_consumption  
+- historical_peak  
+- prediction_error  
+
+### ✔ `gold.risk_zones`
+- region_id  
+- timestamp  
+- risk_level (Low / Medium / High)
+
+### ✔ Weather / Traffic Impact (Silver master table)
+- temperature  
+- humidity  
+- traffic_congestion  
+
+---
+
+## 3. Core Logic
+
+### 3.1 Detecting Predicted Peaks
+IF predicted_consumption >= 0.9 * historical_peak:
+mark as HIGH RISK
+ELSE IF predicted_consumption >= 0.75 * historical_peak:
+mark as MEDIUM RISK
+ELSE:
+mark as LOW RISK
+
+
+### 3.2 Peak Shifting Recommendations
+- Delay charging EV fleets to off-peak hours  
+- Reduce HVAC usage between 12pm–6pm  
+- Activate solar storage systems  
+- Move non-critical operations (e.g., irrigation pumps) to nighttime  
+
+### 3.3 Critical Region Priority
+Regions categorized as "critical":
+
+- Hospitals  
+- Fire stations  
+- Data centers  
+- Transportation hubs  
+
+Logic:
+IF region is critical AND risk_level = HIGH:
+increase energy allocation
+minimize load shifting for this region
+
+### 3.4 Load Balancing Between Neighboring Zones
+The engine compares region clusters:
+IF Region A (High Risk) AND Region B (Low Risk):
+shift partial load from A → B
+
+
+Example:
+- Move cooling load from Zone 1 to Zone 2  
+- Balance street lighting timing between regions  
+
+### 3.5 Weather-Aware Optimization
+IF temperature > 35°C:
+recommend reducing HVAC usage
+IF humidity > 80%:
+increase ventilation before peak hours
+
+
+### 3.6 Traffic-Aware Optimization
+IF traffic_congestion >= 7:
+limit EV charging in congested zones
+
+---
+
+## 4. Output Table: gold.optimization_recommendations
+
+The final table contains:
+
+- timestamp  
+- region_id  
+- predicted_peak_time  
+- risk_level  
+- recommendation_text  
+- priority_score  
+
+Example:
+
+| region_id | timestamp | risk | recommendation |
+|-----------|-----------|-------|----------------|
+| R1        | 2025-11-27 18:00 | HIGH | Reduce HVAC load and shift EV charging to midnight.|
+
+---
+
+## 5. Usage in Power BI
+Visuals supported:
+
+- Peak load highlights  
+- Risk zone heatmap  
+- Recommendations panel  
+- Region-wise optimization suggestions  
+
+---
+
+## 6. Summary
+The Optimization Engine transforms ML predictions into **actionable insights**,
+helping the city reduce energy pressure, avoid blackouts, and stabilize distribution.

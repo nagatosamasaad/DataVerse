@@ -1,0 +1,43 @@
+{
+    "apiVersion": "2024-03-01-preview",
+    "id": "/subscriptions/6f9ebf40-1f11-4550-9486-66f9bbc2c1f8/resourceGroups/rg-smartcity-energy/providers/microsoft.insights/metricalerts/ADF Pipeline Failure Alert",
+    "name": "ADF Pipeline Failure Alert",
+    "type": "microsoft.insights/metricalerts",
+    "location": "global",
+    "tags": {},
+    "properties": {
+        "description": "Triggers when any pipeline in the Data Factory fails.\n",
+        "severity": 2,
+        "enabled": true,
+        "scopes": [
+            "/subscriptions/6f9ebf40-1f11-4550-9486-66f9bbc2c1f8/resourceGroups/rg-smartcity-energy/providers/Microsoft.DataFactory/factories/ADLSGen1111"
+        ],
+        "evaluationFrequency": "PT1M",
+        "autoMitigate": true,
+        "targetResourceType": "Microsoft.DataFactory/factories",
+        "targetResourceRegion": "francecentral",
+        "actions": [
+            {
+                "actionGroupId": "/subscriptions/6f9ebf40-1f11-4550-9486-66f9bbc2c1f8/resourcegroups/rg-smartcity-energy/providers/microsoft.insights/actiongroups/adf-error-alerts",
+                "webHookProperties": {}
+            }
+        ],
+        "windowSize": "PT5M",
+        "criteria": {
+            "allOf": [
+                {
+                    "operator": "GreaterThan",
+                    "threshold": 0,
+                    "name": "Metric1",
+                    "metricNamespace": "Microsoft.DataFactory/factories",
+                    "metricName": "PipelineFailedRuns",
+                    "dimensions": [],
+                    "timeAggregation": "Total",
+                    "skipMetricValidation": false,
+                    "criterionType": "StaticThresholdCriterion"
+                }
+            ],
+            "odata.type": "Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria"
+        }
+    }
+}

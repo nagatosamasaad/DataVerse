@@ -1,0 +1,82 @@
+# Gold Layer — Tables & Schemas  
+Smart City Energy Optimization
+
+This document lists the schema definitions of all Gold layer tables used for
+forecasting, risk analysis, and optimization.
+
+
+---
+
+# 1. Table: gold.energy_forecast
+
+Contains forecasted energy consumption produced by the Azure ML Forecasting model.
+
+### **Schema**
+| Column                | Type        | Description                                |
+|----------------------|-------------|--------------------------------------------|
+| timestamp            | datetime    | Forecasted hour                            |
+| region_id            | string      | City region                                |
+| predicted_consumption| double      | Model output                               |
+| actual_consumption   | double?     | Real reading (optional)                    |
+| prediction_error     | double      | abs(actual - predicted)                    |
+
+### **Purpose**
+- Used for Power BI line forecast  
+- Input for risk zone calculation  
+- Basis for optimization engine  
+
+---
+
+# 2. Table: gold.risk_zones
+
+Assigns risk level (Low/Medium/High) for each region & hour.
+
+### **Schema**
+| Column     | Type        | Description                           |
+|------------|-------------|---------------------------------------|
+| region_id  | string      | City region                           |
+| timestamp  | datetime    | Target hour                           |
+| risk_level | string      | High / Medium / Low                   |
+
+### **Risk Rules**
+HIGH → predicted ≥ 90% of peak
+MEDIUM → predicted ≥ 75%
+LOW → otherwise
+
+---
+
+# 3. Table: gold.optimization_recommendations
+
+Stores final optimization instructions based on ML + weather + traffic.
+
+### **Schema**
+| Column               | Type        | Description                                |
+|---------------------|-------------|--------------------------------------------|
+| region_id           | string      | City region                                |
+| timestamp           | datetime    | Forecasted hour                            |
+| predicted_peak_time | datetime    | When the spike is expected                 |
+| risk_level          | string      | High / Medium / Low                        |
+| recommendation_text | string      | Optimization action                        |
+| priority_score      | int         | 1 = Critical, 2 = Medium, 3 = Low urgency |
+
+### **Examples**
+- "Shift non-critical consumption to nighttime"  
+- "Increase reliance on solar storage"  
+- "Reduce HVAC usage during 4–6 PM"  
+
+---
+
+# Summary
+These Gold tables represent the **highest value layer** in the Smart City platform.
+They combine:
+
+- Forecasting  
+- Risk analysis  
+- Optimization logic  
+- Decision-making outputs  
+
+And they feed directly into:
+
+- Power BI Dashboard  
+- Operational reports  
+- City energy management systems  
