@@ -7,7 +7,8 @@ optimization recommendations for smart city energy management.
 ---
 
 ## 🌍 Project Architecture
-![Architecture](architecture/system_architecture.png)
+![Architecture](SmartCity-Energy-Optimization/architecture
+/system_architecture.png)
 
 ### Components:
 - Azure Data Factory (Raw → Bronze)
