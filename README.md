@@ -7,7 +7,7 @@ optimization recommendations for smart city energy management.
 ---
 
 ## 🌍 Project Architecture
-![Architecture](SmartCity-Energy-Optimization/architecture
+![Architecture](architecture
 /system_architecture.png)
 
 ### Components:
